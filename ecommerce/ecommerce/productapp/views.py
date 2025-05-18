@@ -1,12 +1,19 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Brand,Category,Product,productdetail
-from.serializer import brandSerializer,categorySerializer,productSerializer,productdetailSerializer
+from .models import Brand,Category,Product,productdetail,userdata2
+from.serializer import brandSerializer,categorySerializer,productSerializer,productdetailSerializer,userserializer2
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 # Create your views here.
 class brandviewset(viewsets.ViewSet):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
     serializer_class = brandSerializer
     @extend_schema(
         request=brandSerializer,
@@ -42,35 +49,15 @@ class categoryviewset(viewsets.ViewSet):
             serializer.save()
             return Response({'msg':'created sucessfully'})
      
-class productviewset(viewsets.ViewSet):
+class productviewset(viewsets.ModelViewSet):
+    # authentication_classes=[JWTAuthentication]
+    # permission_classes=[IsAuthenticated]
     queryset=Product.objects.all();
 
     # if we did detail is true then i have to tgive product id for get product which is not necessary
-    
-    @action(url_path=r'category/(?P<category>[^/]+)/all' 
-            ,detail=False, 
-             methods=['get'] )
-
-    def list_by_category(self,request,category=None):
-        serialized=productSerializer(self.queryset.filter(category__name=category),many=True)
-        return Response(serialized.data)
-    
-
+    queryset = Product.objects.all()
     serializer_class = productSerializer
-    @extend_schema(
-        request=productSerializer ,
-        
-       
-    )
-    def list(self, request):
-       
-        serializer=productSerializer(self.queryset,many=True)
-        return Response(serializer.data)
-    def create(self,request):
-        serializer=productSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'msg':'created sucessfully'})
+    
 class productdetailviewset(viewsets.ViewSet):
     serializer_class = productdetailSerializer
     @extend_schema(
@@ -87,3 +74,27 @@ class productdetailviewset(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response({'msg':'created sucessfully'})
+
+class userviewset2(viewsets.ViewSet):
+    def create(self,request):
+        serializer=userserializer2(data=request.data)
+        print( serializer)
+        if serializer.is_valid():
+            username=serializer.data["username"]
+            print(username)
+            password=serializer.data["password"]
+          
+            user = authenticate(username=username,password = password)
+            print(user)
+            if user is None:
+                return Response({'status':400,'msg':'invalid Password','data':serializer.errors})
+            refresh = RefreshToken.for_user(user)
+            return Response({'statusCode':201,'msg':'sucessfully login',
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                })
+            
+        return Response({'status':400,'msg':'something went wrong','data':serializer.errors})
+
+
+            

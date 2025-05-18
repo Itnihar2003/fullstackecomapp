@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product,Category,Brand,productdetail
+from .models import Product,Category,Brand,productdetail,userdata2
 # Register your models here.
 
 class Productinline(admin.TabularInline):
@@ -13,3 +13,4 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Brand)
+admin.site.register(userdata2)

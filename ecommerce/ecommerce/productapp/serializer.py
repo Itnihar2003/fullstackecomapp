@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from.models import Brand,Category,Product,productdetail
+from.models import Brand,Category,Product,productdetail,userdata2
 class brandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
@@ -16,20 +16,40 @@ class productdetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = productdetail
         fields = '__all__'
-
-class productSerializer(serializers.ModelSerializer):
-
-    # to show all data of brand and  category we have to use nestedserializer
+   # to show all data of brand and  category we have to use nestedserializer
     # brand=brandSerializer()
     # category=categorySerializer()
 #    only fatching name of brand and category not all detail
-    brand_name=serializers.CharField(source="brand.name")
-
-    category_name=serializers.CharField(source="category.name")
-    
-    product_detail=productdetailSerializer(many=True) 
-    
-
+class productSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(source="brand.name")
+    category_name = serializers.CharField(source="category.name")
+    base_category_name = serializers.SerializerMethodField()
+    product_detail = productdetailSerializer(many=True, read_only=True)
+    added_to_cart = serializers.BooleanField()
     class Meta:
         model = Product
-        fields = ("name","describtion","is_digital","brand_name","category_name","product_detail")
+        fields = (
+            "name",
+            "image",
+            "describtion",
+            "is_digital",
+            "brand_name",
+            "category_name",
+            "added_to_cart",
+            "base_category_name",
+            "product_detail",
+        )
+
+    def get_base_category_name(self, obj):
+        category = obj.category
+        while category.parent is not None:
+            category = category.parent
+        return category.name
+
+
+
+class userserializer2(serializers.ModelSerializer):
+    class Meta:
+        model = userdata2
+        fields = '__all__'
+        
