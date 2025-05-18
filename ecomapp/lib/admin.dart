@@ -33,7 +33,7 @@ class _adminpannelState extends State<adminpannel> {
                 },
               ),
             )
-            ..loadRequest(Uri.parse('http://10.0.2.2:8000/brand//'))),
+            ..loadRequest(Uri.parse('https://backapi-7.onrender.com/admin'))),
     );
   }
 }

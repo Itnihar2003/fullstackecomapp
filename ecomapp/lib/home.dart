@@ -43,11 +43,13 @@ class home extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 100),
                 child: TextButton(
-                  onPressed: () {   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => homepage(),
-                      ));},
+                  onPressed: () {   
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => homepage(),
+                    //   ));
+                      },
                   child: Container(
                     child: Center(child: Text("Customer")),
                     height: 200,
