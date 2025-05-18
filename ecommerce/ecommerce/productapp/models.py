@@ -25,8 +25,8 @@ class Product(models.Model):
     is_digital=models.BooleanField(default=False)
     brand=models.ForeignKey(Brand,on_delete=models.CASCADE)
     category=TreeForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True )
-   
-    
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    added_to_cart = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
@@ -39,3 +39,17 @@ class productdetail(models.Model):
     is_active=models.BooleanField(default=False)
     def __str__(self):
         return self.sku
+
+class userdata(models.Model):
+    mail=models.EmailField()
+    
+    password=models.CharField(max_length=50)
+
+class userdata2(models.Model):
+    username=models.CharField(max_length=50)
+    password=models.CharField(max_length=50)
+
+
+
+
+

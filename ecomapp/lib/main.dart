@@ -1,11 +1,12 @@
 import 'package:ecomapp/home.dart';
 import 'package:ecomapp/homepage.dart';
+import 'package:ecomapp/Welcomepage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: home(),
+    home: WelcomePage(),
     
   ));
 }
